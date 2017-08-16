@@ -88,6 +88,9 @@ open class CircleMenu: UIButton {
   /// Delay between show buttons
   @IBInspectable open var showDelay: Double = 0
   
+    @IBInspectable open var startAngle: Float = -90
+    @IBInspectable open var stepAngle: Float = 45
+
   /// The object that acts as the delegate of the circle menu.
   @IBOutlet weak open var delegate: AnyObject? //CircleMenuDelegate?
   
@@ -191,10 +194,12 @@ open class CircleMenu: UIButton {
   fileprivate func createButtons(platform: UIView) -> [UIButton] {
     var buttons = [UIButton]()
     
-    let step: Float = 360.0 / Float(self.buttonsCount)
+    let start = self.startAngle
+    //let step: Float = 360.0 / Float(self.buttonsCount)
+    let step = self.stepAngle
     for index in 0..<self.buttonsCount {
       
-      let angle: Float = Float(index) * step
+      let angle: Float = start + (Float(index) * step)
       let distance = Float(self.bounds.size.height/2.0)
       let button = Init(CircleMenuButton(size: self.bounds.size, platform: platform, distance:distance, angle: angle)) {
         $0.tag = index
@@ -329,11 +334,14 @@ open class CircleMenu: UIButton {
     guard let buttons = self.buttons else {
       return
     }
-    
-    let step: Float = 360.0 / Float(self.buttonsCount)
+
+    let start = self.startAngle
+    //let step: Float = 360.0 / Float(self.buttonsCount)
+    let step = self.stepAngle
+
     for index in 0..<self.buttonsCount {
       guard case let button as CircleMenuButton = buttons[index] else { continue }
-      let angle: Float = Float(index) * step
+      let angle: Float = start + (Float(index) * step)
       if isShow == true {
         delegate?.circleMenu?(self, willDisplay: button, atIndex: index)
         
